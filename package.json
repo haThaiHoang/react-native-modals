@@ -1,7 +1,7 @@
 {
   "name": "react-native-modals",
   "version": "0.19.8",
-  "description": "React Native Modals Library for IOS & Android.",
+  "description": "React Native Modals Library for IOS & Android. hoanght",
   "main": "dist/index.js",
   "scripts": {
     "test": "jest",
