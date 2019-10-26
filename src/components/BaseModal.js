@@ -70,6 +70,7 @@ type State = {
 
 class BaseModal extends Component<ModalProps, State> {
   static defaultProps = {
+    draggable: true,
     rounded: true,
     modalTitle: null,
     visible: false,
@@ -196,6 +197,7 @@ class BaseModal extends Component<ModalProps, State> {
   render() {
     const { modalState, modalAnimation } = this.state;
     const {
+      draggable,
       rounded,
       modalTitle,
       children,
@@ -227,51 +229,81 @@ class BaseModal extends Component<ModalProps, State> {
         }}
       >
         <View style={[styles.container, hidden]}>
-          <DraggableView
-            style={StyleSheet.flatten([styles.draggableView, style])}
-            onMove={this.handleMove}
-            onSwiping={onSwiping}
-            onRelease={onSwipeRelease}
-            onSwipingOut={this.handleSwipingOut}
-            onSwipeOut={onSwipeOut}
-            swipeDirection={swipeDirection}
-            swipeThreshold={swipeThreshold}
-          >
-            {({ pan, onLayout }) => (
-              <Fragment>
-                <Backdrop
-                  ref={(ref) => {
-                    this.backdrop = ref;
-                  }}
-                  pointerEvents={this.pointerEvents}
-                  visible={overlayVisible}
-                  onPress={onTouchOutside}
-                  backgroundColor={overlayBackgroundColor}
-                  opacity={overlayOpacity}
-                  animationDuration={animationDuration}
-                  useNativeDriver={useNativeDriver}
-                />
-                <Animated.View
-                  style={pan.getLayout()}
-                  onLayout={onLayout}
-                >
+          {draggable ? (
+            <DraggableView
+              style={StyleSheet.flatten([styles.draggableView, style])}
+              onMove={this.handleMove}
+              onSwiping={onSwiping}
+              onRelease={onSwipeRelease}
+              onSwipingOut={this.handleSwipingOut}
+              onSwipeOut={onSwipeOut}
+              swipeDirection={swipeDirection}
+              swipeThreshold={swipeThreshold}
+            >
+              {({ pan, onLayout }) => (
+                <Fragment>
+                  <Backdrop
+                    ref={(ref) => {
+                      this.backdrop = ref;
+                    }}
+                    pointerEvents={this.pointerEvents}
+                    visible={overlayVisible}
+                    onPress={onTouchOutside}
+                    backgroundColor={overlayBackgroundColor}
+                    opacity={overlayOpacity}
+                    animationDuration={animationDuration}
+                    useNativeDriver={useNativeDriver}
+                  />
                   <Animated.View
-                    style={[
-                      styles.modal,
-                      round,
-                      this.modalSize,
-                      modalStyle,
-                      modalAnimation.getAnimations(),
-                    ]}
+                    style={pan.getLayout()}
+                    onLayout={onLayout}
                   >
-                    {modalTitle}
-                    {children}
-                    {footer}
+                    <Animated.View
+                      style={[
+                        styles.modal,
+                        round,
+                        this.modalSize,
+                        modalStyle,
+                        modalAnimation.getAnimations(),
+                      ]}
+                    >
+                      {modalTitle}
+                      {children}
+                      {footer}
+                    </Animated.View>
                   </Animated.View>
-                </Animated.View>
-              </Fragment>
-            )}
-          </DraggableView>
+                </Fragment>
+              )}
+            </DraggableView>
+          ) : (
+            <View style={StyleSheet.flatten([styles.draggableView, style])}>
+              <Backdrop
+                ref={(ref) => {
+                  this.backdrop = ref;
+                }}
+                pointerEvents={this.pointerEvents}
+                visible={overlayVisible}
+                onPress={onTouchOutside}
+                backgroundColor={overlayBackgroundColor}
+                opacity={overlayOpacity}
+                animationDuration={animationDuration}
+                useNativeDriver={useNativeDriver}
+              />
+              <Animated.View
+                style={[
+                  styles.modal,
+                  round,
+                  this.modalSize,
+                  modalStyle,
+                  modalAnimation.getAnimations(),
+                ]}
+              >
+                {modalTitle}
+                {children}
+                {footer}
+              </Animated.View>
+            </View>
+          )}
         </View>
       </ModalContext.Provider>
     );
